@@ -69,18 +69,18 @@ def extract_urls(data):
             urls.extend(extract_urls(item))
     return urls
 
-def find_urls(query: str, pages: int, limit: int) -> List[str]:
-    # Mock implementation for URLs
-    return [
-        "https://www.linkedin.com/in/john-doe/",
-        "https://www.linkedin.com/in/jane-doe/"
-    ]
+# def find_urls(query: str, pages: int, limit: int) -> List[str]:
+#     # Mock implementation for URLs
+#     return [
+#         "https://www.linkedin.com/in/john-doe/",
+#         "https://www.linkedin.com/in/jane-doe/"
+#     ]
 
 def get_linkedin_id_from_search_urls(urls: List[str]) -> str:
     for url in urls:
         if "linkedin.com/in/" in url:
             return url.split("linkedin.com/in/")[1].split('/')[0]
-
+        
 def fetch_profile_info(participant, company):
     search_query = f"{participant} {company} LinkedIn"
     urls_found = find_urls(search_query, pages=1, limit=5)
@@ -126,13 +126,9 @@ def generate_chatgpt_info(profile: Dict) -> Dict:
 def get_profile(request):
     data = request.data
     company = data.get('company')
-    print(data)
-    company = "Climeworks"
-    participants = ["Jan Heimes"]
-    # participants = data.get('participants')
-    # participants = participants.split(",")
-    # purpose = data.get('purpose')
-    if company is None:
+    participants = data.get('participants')
+    purpose = data.get('purpose')
+    if company is None or participants is None or purpose is None:
         return Response({"error": "Missing args"}, status=status.HTTP_400_BAD_REQUEST)
 
     # get profile for all participants
